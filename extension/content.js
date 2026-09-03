@@ -22,46 +22,21 @@ cpInput.addEventListener('keydown', async function (event) {
       if (statusIndicator.src.includes('red.png')) {
         try {
           if (cpInput.value) {
-            // Check if the input is just "o"
-            if (cpInput.value === 'o') {
-              // If the input is "o", copy a specific text to the clipboard
-              const textToCopy = 'izquierda-links encima-oben derecha-rechts debajo-unter lado-neben delante-vor detras-hinter en-innen entre-zwischen';
+            // Create the user input
+            const userMessage = cpInput.value;
 
-              try {
-                await navigator.clipboard.writeText(textToCopy);
-                console.log('Copied to clipboard:', textToCopy);
-              } catch (error) {
-                console.error('Error copying to clipboard:', error);
-              }
-            }
-            // Check if the input is just "p"
-            else if (cpInput.value === 'p') {
-              // If the input is "p", copy another specific text to the clipboard
-              const textToCopy = 'mich-me dich-te ihn-lo --- uns-nos euch-os sie-los/las';
+            // Send the user input to the Chat GPT API
+            const response = await getChatGptResponse(userMessage, 1000);
 
-              try {
-                await navigator.clipboard.writeText(textToCopy);
-                console.log('Copied to clipboard:', textToCopy);
-              } catch (error) {
-                console.error('Error copying to clipboard:', error);
-              }
-            } else {
-              // Create the user input
-              const userMessage = cpInput.value;
+            // Get the response text from the API
+            const responseText = response.choices[0].text;
 
-              // Send the user input to the Chat GPT API
-              const response = await getChatGptResponse(userMessage, 1000);
-
-              // Get the response text from the API
-              const responseText = response.choices[0].text;
-
-              // Copy the response text to the clipboard
-              try {
-                await navigator.clipboard.writeText(responseText);
-                console.log('Copied to clipboard:', responseText);
-              } catch (error) {
-                console.error('Error copying to clipboard:', error);
-              }
+            // Copy the response text to the clipboard
+            try {
+              await navigator.clipboard.writeText(responseText);
+              console.log('Copied to clipboard:', responseText);
+            } catch (error) {
+              console.error('Error copying to clipboard:', error);
             }
 
             // Change the status indicator back to green
@@ -126,3 +101,4 @@ async function getChatGptResponse(message, maxTokens) {
     return 'An error occurred while fetching data from the API';
   }
 }
+
